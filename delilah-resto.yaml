@@ -1,0 +1,794 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: Delilah Restó
+  description: "API for manage all food restó´s operations \n \n Open: 20:00 pm - 02:00 am"
+
+servers:
+  - description: Mi servidor local
+    url: http://localhost:3000
+
+# tags:
+# - name: Usuarios
+#   description:
+
+paths:
+  # Users ----------------------
+  /register:
+    post:
+      description: Crea un nuevo usuario
+      tags:
+        - Usuarios
+      responses:
+        "201":
+          $ref: '#/components/responses/user_created'
+        "400":
+          $ref: '#/components/responses/email_duplicated'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_registration'
+              
+  /login:
+    post:
+      description: Login de usuario
+      tags:
+        - Usuarios
+      responses:
+        "200":
+          $ref: '#/components/responses/user_logged'
+        "400":
+          $ref: '#/components/responses/complete_all_fields'
+        "401":
+          $ref: '#/components/responses/invalid_password'
+        "404":
+          $ref: '#/components/responses/user_not_found'    
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_login' 
+              
+
+  # Products ----------------------
+
+  /products/:
+    get:
+      description: Ver productos disponibles
+      tags:
+        - Productos
+      responses:
+        "200":
+          $ref: '#/components/responses/request_ok'
+        "401":
+          $ref: '#/components/responses/user_not_logged'
+        "404":
+          $ref: '#/components/responses/user_not_found' 
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+    post:
+      description: Crear producto
+      tags:
+        - Productos
+      responses:
+        "201":
+          $ref: '#/components/responses/product_created'
+        "401":
+          $ref: '#/components/responses/needs_admin'
+        "400":
+          $ref: '#/components/responses/user_not_logged'
+        "404":
+          $ref: '#/components/responses/user_not_found'
+        "409":
+          $ref: '#/components/responses/product_duplicated'           
+        "412":
+          $ref: '#/components/responses/check_qty'     
+        "411":
+          $ref: '#/components/responses/check_price'     
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/product_create'
+  /products/{productId}:
+    put:
+      description: El administrador puede modificar un producto
+      tags:
+        - Productos
+      responses:
+        "401":
+          $ref: '#/components/responses/needs_admin'
+        "400":
+          $ref: '#/components/responses/user_not_logged'
+        "404":
+          $ref: '#/components/responses/product_not_found'
+        "201":
+          $ref: '#/components/responses/product_modified'
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/product_modify'
+    delete:
+      description: El administrador puede eliminar un producto existente
+      tags:
+        - Productos
+      responses:
+        "200":
+          $ref: '#/components/responses/product_deleted'
+        "401":
+          $ref: '#/components/responses/needs_admin'
+        "400":
+          $ref: '#/components/responses/user_not_logged'    
+        "404":
+          $ref: '#/components/responses/product_not_found'
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: integer
+            example: 1
+
+  # Orders ----------------------
+  /orders:
+    get:
+      description: El usuario puede ver su historial de pedidos. El administrador puede ver todos los pedidos.
+      tags:
+        - Pedidos
+      responses:
+        "200":
+          $ref: '#/components/responses/request_ok'
+        "400":
+          $ref: '#/components/responses/order_not_found'          
+        "401":
+          $ref: '#/components/responses/user_not_logged'
+        "404":
+          $ref: '#/components/responses/user_not_found'           
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+    post:
+      description: El usuario puede realizar un pedido
+      tags:
+        - Pedidos
+      responses:
+        "201":
+          $ref: '#/components/responses/order_created'
+        "412":
+          $ref: '#/components/responses/check_qty' 
+        "404":
+          $ref: '#/components/responses/check_productId'  
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/order_create'
+    put:
+      description: Todos pueden modificar los productos de su última orden si está pendiente. 
+      tags:
+        - Pedidos
+      responses:
+        "201":
+          $ref: '#/components/responses/order_modified'
+        "412":
+          $ref: '#/components/responses/check_qty' 
+        "404":
+          $ref: '#/components/responses/check_productId' 
+        "400":
+          $ref: '#/components/responses/order_not_pending'
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/order_modify'
+                     
+  /orders/{orderId}:
+    delete:
+      description: El administrador puede eliminar un pedido sin importar su estado. El usuario comun solo aquel que este pendiente.
+      tags:
+        - Pedidos
+      responses:
+        "200":
+          $ref: '#/components/responses/order_deleted'
+        "404":
+          $ref: '#/components/responses/user_not_found'
+        "400":
+          $ref: '#/components/responses/order_not_found'
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: integer
+            example: 1
+    patch:
+      description: El administrador puede modificar el estado de una orden.
+      tags:
+        - Pedidos
+      responses:
+        "201":
+          $ref: '#/components/responses/order_state_modified'
+        "400":
+          $ref: '#/components/responses/order_not_found'
+        "401":
+          $ref: '#/components/responses/needs_admin'  
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: integer
+            example: 1   
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_status:
+                  type: string
+                  description: Estado de la orden
+                  example: En preparación          
+  /orders/checkout:
+    post:
+      description: Confirmar pedidos pendientes.
+      tags:
+        - Pedidos
+      responses:
+        "200":
+          $ref: '#/components/responses/order_confirmed'
+        "404":
+          $ref: '#/components/responses/paymentmethod_not_found'
+        "400":
+          $ref: '#/components/responses/order_empty'
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/order_checkout'  
+
+  # Payment Methods ----------------------
+  /paymentMethods:
+    get:
+      description: El administrador puede ver los métodos de pago disponibles
+      tags:
+        - Métodos de pago
+      responses:
+        "200":
+          $ref: '#/components/responses/request_ok'
+        "401":
+          $ref: '#/components/responses/needs_admin'
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+    post:
+      description: El administrador puede crear un nuevo método de pago
+      tags:
+        - Métodos de pago
+      responses:
+        "201":
+          $ref: '#/components/responses/paymentmethod_created'
+        "401":
+          $ref: '#/components/responses/needs_admin'
+        "404":
+          $ref: '#/components/responses/user_not_found'
+        "400":
+          $ref: '#/components/responses/paymentmethod_duplicated'
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/paymentmethod_create'
+  /paymentMethods/{paymMId}:
+    put:
+      description: El administrador puede modificar un método de pago existente.
+      tags:
+        - Métodos de pago
+      responses:
+        "201":
+          $ref: '#/components/responses/paymentmethod_modified'
+        "404":
+          $ref: '#/components/responses/paymentmethod_not_found'
+        "400":
+          $ref: '#/components/responses/paymentmethod_duplicated'
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: path
+          name: paymMId
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/paymentmethod_modify' 
+    delete:
+      description: El administrador puede eliminar un método de pago existente
+      tags:
+        - Métodos de pago
+      responses:
+        "200":
+          $ref: '#/components/responses/paymentmethod_deleted'
+        "400":
+          $ref: '#/components/responses/paymentmethod_not_found'
+        "401":
+          $ref: '#/components/responses/needs_admin'
+        "404":
+          $ref: '#/components/responses/user_not_found'         
+      parameters:
+        - in: header
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: path
+          name: paymMId
+          required: true
+          schema:
+            type: integer
+            example: 1
+
+
+# ------------------------------------------------------
+# ------------------------------------------------------
+components:
+  schemas:
+    user_registration:
+      type: object
+      properties:
+        userName:
+          type: string
+          description: Ingrese un nombre de usuario
+          example: juanperez
+        firstName:
+          type: string
+          description: Ingrese su nombre
+          example: Juan
+        lastName:
+          type: string
+          description: Ingrese su apellido
+          example: Perez
+        password:
+          type: string
+          description: Ingrese su contraseña
+          example: 123asd
+        repeatPass:
+          type: string
+          description: Repita su contraseña
+          example: 123asd
+        email:
+          type: string
+          description: Ingrese su email
+          example: juanp@gmail.com
+        phone:
+          type: string
+          description: Ingrese su teléfono
+          example: 2964225566
+        address:
+          type: string
+          description: Ingrese su dirección
+          example: San Martin 226
+    user_login:      
+      type: object
+      properties:
+        userName_email:
+          type: string
+          description: Ingrese su nombre de usuario
+          example: juanperez
+        password:
+          type: string
+          description: Ingrese su contraseña
+          example: 123abc 
+
+    order_create:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: integer
+              qty:
+                type: integer
+          example:
+            - productId: 1
+              qty: 2
+            - productId: 1
+              qty: 2
+    order_modify:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: integer
+              qty:
+                type: integer
+          example:
+            - productId: 1
+              qty: 2
+            - productId: 1
+              qty: 2
+    order_checkout:
+      type: object
+      properties:
+        paymentMethodId:
+          type: integer
+          example: 4
+        address:
+          type: string
+          example: Bilbao 224 
+      
+    product_create:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Ingrese el nombre del producto
+          example: Hamburguesa
+        description:
+          type: string
+          description: Ingrese una description
+          example: Hamburguesa de carne, con cebolla y queso
+        price:
+          type: integer
+          description: Ingrese el precio del producto
+          example: 750
+        qty:
+          type: integer
+          description: Ingrese una cantidad
+          example: 1
+    product_modify:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Ingrese el nombre del producto
+          example: Burger
+        description:
+          type: string
+          description: Ingrese una description
+          example: Hamburguesa de carne, con cebolla y queso
+        price:
+          type: integer
+          description: Ingrese el precio del producto
+          example: 70
+        qty:
+          type: integer
+          description: Ingrese una cantidad
+          example: 1                    
+
+    paymentmethod_create:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Bitcoin
+    paymentmethod_modify:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Descripcion
+          example: Western Union      
+
+# ------------------------------------------------------
+# ------------------------------------------------------
+
+  responses:
+    user_created:
+      description: User registered successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Usuario creado correctamente! } 
+    email_duplicated:
+      description: Email already exists
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": El email ingresado ya se encuentra registrado }  
+    user_logged:
+      description: User logged successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Bienvenido! }
+        text/plain:
+          schema:
+            type: string
+            example: ok
+    user_not_logged:
+      description: User not logged
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": El usuario ingresado no se encuentra logeado }
+        text/plain:
+          schema:
+            type: string
+            example: ok        
+    user_not_found:
+      description: User not found
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": El usuario ingresado no se encuentra registado }  
+    complete_all_fields:
+      description: Complete all fields
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Complete todos los campos }
+    invalid_password:
+      description: Invalid password
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": La contraseña ingresada es incorrecta }       
+    needs_admin:
+      description: Not authorized
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              { "message": "No tiene permisos para realizar esta acción" }
+
+    request_ok:
+      description: User request is completed
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Mostrando la información solicitada }       
+             
+    product_created:
+      description: Product created
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Producto creado! }        
+    product_duplicated:
+      description: Product duplicated
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": El producto con el nombre ingresado ya existe! Elija otro nombre. }  
+    check_qty:
+      description: Bad quantity
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": El producto debe contener al menos una unidad }
+    check_price:
+      description: Bad price
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": El producto no puede tener un precio en cero }
+    check_productId:
+      description: Bad product ID
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Verifique que ningún ID de producto este en cero }            
+    product_modified:
+      description: Product modified successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Producto modificado! }
+    product_not_found:
+      description: Product not found
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Producto no encontrado! }  
+    product_deleted:
+      description: Product deleted successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Producto eliminado! } 
+            
+    order_not_found:
+      description: No orders on system
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": No hay ordenes disponibles para mostrar }  
+    order_created:
+      description: Order created successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Productos añadidos a la orden }  
+    order_not_pending:
+      description: Order not pending 
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": El usuario actual no posee una orden pendiente para modificar }
+    order_modified:
+      description: Order modified successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": La orden del usuario actual ha sido modificada! }  
+    order_deleted:
+      description: Order deleted successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Orden eliminada! } 
+    order_state_modified:
+      description: Order state modified successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": La orden cambió al estado que seleccionó }  
+    order_confirmed:
+      description: Order confirmed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Todas sus ordenes han sido confirmadas }
+    order_empty:
+      description: No orders to confirm
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Carrito vacío }            
+    
+    paymentmethod_not_found:
+      description: Payment method not found
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Método de pago seleccionado no registrado }
+    paymentmethod_created:
+      description: Payment method created successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Método de pago agregado! }
+    paymentmethod_duplicated:
+      description: Payment method already exists
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Método de pago ingresado ya registrado! }                          
+    paymentmethod_modified:
+      description: Payment method modified successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Método de pago modificado! }
+    paymentmethod_deleted:
+      description: Payment method deleted successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            example: { "message": Método de pago eliminado! }            
+
