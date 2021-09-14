@@ -11,6 +11,14 @@ Entorno de ejecución del servidor:
 - Descarga: https://nodejs.org/es/download/
 
 
+Comprobación de endpoints:
+- Postman: https://www.postman.com/downloads/
+
+Una vez descargado Postman se puede importar la colección desde el repositorio de Github, o seleccionando el archivo "Delilah Resto.postman_collection.json" ubicado en la raíz del directorio.
+
+Documentación:
+- Swagger: https://app.swaggerhub.com/apis/pablok3/delilah-resto/1.0.0
+
 
 ## 1 - Instalación del proyecto 
 
@@ -40,14 +48,6 @@ npm install
 ## 4 - Iniciando el servidor 
 
 Ubicarse en la carpeta raiz del proyecto y ejecutar el comando: npm start. A partir de ahora ya se puede ejecutar el sistema.
-
-Tecnologías utilizadas:
-
-Comprobación de endpoints:
-- Postman
-
-Documentación:
-- Swagger
 
 
 # Usuario Administrador

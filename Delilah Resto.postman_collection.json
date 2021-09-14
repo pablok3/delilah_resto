@@ -1,0 +1,517 @@
+{
+	"info": {
+		"_postman_id": "7178cb25-6dbc-4ebf-9083-7b2ee273480a",
+		"name": "Delilah Resto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "/login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"login"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Login de usuario"
+					},
+					"response": []
+				},
+				{
+					"name": "/register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"userName\": \"juanperez\",\n \"firstName\": \"Juan\",\n \"lastName\": \"Perez\",\n \"password\": \"123asd\",\n \"repeatPass\": \"123asd\",\n \"email\": \"juanp@gmail.com\",\n \"phone\": \"labore \",\n \"address\": \"San Martin 123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"register"
+							]
+						},
+						"description": "Crea un nuevo usuario"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "/products/",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "userid",
+								"value": "1"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/products/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"products",
+								""
+							],
+							"query": [
+								{
+									"key": "isActive",
+									"value": "false",
+									"disabled": true
+								}
+							]
+						},
+						"description": "El usuario común puede ver los productos activos, el administrador puede ver incluso aquellos deshabilitados."
+					},
+					"response": []
+				},
+				{
+					"name": "/products/",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "userid",
+								"value": "1"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/products/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"products",
+								""
+							]
+						},
+						"description": "Crear producto"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/:productId",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "userid",
+								"value": "1"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/products/1/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"products",
+								"1",
+								""
+							]
+						},
+						"description": "El administrador puede modificar un producto"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/:productId",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "userid",
+								"value": "1"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/products/1/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"products",
+								"1",
+								""
+							]
+						},
+						"description": "El administrador puede eliminar un producto existente"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "/orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "userid",
+								"value": "2"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/orders/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"orders",
+								""
+							]
+						},
+						"description": "El usuario puede ver su historial de pedidos. El administrador puede ver todos los pedidos."
+					},
+					"response": []
+				},
+				{
+					"name": "/orders",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "userid",
+								"value": "2"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/orders/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"orders",
+								""
+							]
+						},
+						"description": "El usuario puede realizar un pedido"
+					},
+					"response": []
+				},
+				{
+					"name": "/orders",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "userid",
+								"value": "2"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"orders"
+							]
+						},
+						"description": "Todos pueden modificar los productos de su última orden si está pendiente."
+					},
+					"response": []
+				},
+				{
+					"name": "/orders/:orderId",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "userid",
+								"value": "2"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/orders/1/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"orders",
+								"1",
+								""
+							]
+						},
+						"description": "El administrador puede eliminar un pedido sin importar su estado. El usuario comun solo aquel que este pendiente."
+					},
+					"response": []
+				},
+				{
+					"name": "/orders/checkout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "userid",
+								"value": "1"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/orders/checkout/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"orders",
+								"checkout",
+								""
+							]
+						},
+						"description": "Confirmar pedidos pendientes."
+					},
+					"response": []
+				},
+				{
+					"name": "/orders/:orderId",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "userid",
+								"value": "1"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/orders/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"orders",
+								"1"
+							],
+							"query": [
+								{
+									"key": "userid",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						},
+						"description": "El administrador puede modificar el estado de una orden."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment Methods",
+			"item": [
+				{
+					"name": "/paymentMethods",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "userid",
+								"value": "1"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/paymentMethods/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"paymentMethods",
+								""
+							]
+						},
+						"description": "El administrador puede ver los métodos de pago disponibles"
+					},
+					"response": []
+				},
+				{
+					"name": "/paymentMethods",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "userid",
+								"value": "1"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/paymentMethods/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"paymentMethods",
+								""
+							],
+							"query": [
+								{
+									"key": "iduser",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						},
+						"description": "El administrador puede crear un nuevo método de pago"
+					},
+					"response": []
+				},
+				{
+					"name": "/paymentMethods/:paymMId",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "userid",
+								"value": "1"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/paymentMethods/1/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"paymentMethods",
+								"1",
+								""
+							]
+						},
+						"description": "El administrador puede modificar un método de pago existente."
+					},
+					"response": []
+				},
+				{
+					"name": "/paymentMethods/:paymMId",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "userid",
+								"value": "1"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/paymentMethods/4/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"paymentMethods",
+								"4",
+								""
+							]
+						},
+						"description": "El administrador puede eliminar un método de pago existente"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
