@@ -19,7 +19,7 @@ Una vez descargado Postman se puede importar la colección desde el repositorio 
 
 Documentación:
 - Swagger
-- Descarga: https://app.swaggerhub.com/apis/pablok3/delilah-resto/1.0.0
+- Link: https://app.swaggerhub.com/apis/pablok3/delilah-resto/1.0.0
 
 
 ## 1 - Instalación del proyecto 
